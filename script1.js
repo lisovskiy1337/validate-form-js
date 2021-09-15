@@ -82,42 +82,70 @@ document.addEventListener('DOMContentLoaded', () => {
             if (reqInput.getAttribute("name") === nameInput) {
                 if (!inputTest(testName, reqInput)) {
                     formAddError(reqInput);
-                    error++;
+                    ++error;
 
                 }
-               
             }
         });
-        
+        console.log(error);
         return error;
     };
 
 
-
-
+    const obj = {
+        email: validol('email', emailTest),
+        phone: validol('phone', onlyNums),
+        name: validol('name', onlyTextTest)
+    };
 
 
     // 'validates' inputs with regex, counts errors, adds error classes
     const validateForm = (form) => {
 
-        allInputs.forEach(input => {
-            input.value.trim().toLowerCase();
-            formRemoveError(input);
-            if (!input.classList.contains('_req')) {
-                formAddError(input);
-            }
-            if (input.value.length) {
-                formRemoveError(input);
-            }
-        });
+        // allInputs.forEach(input => {
+        //     input.value.trim().toLowerCase();
+        //     formRemoveError(input);
+        //     if (!input.classList.contains('_req')) {
+        //         formAddError(input);
+        //     }
+        //     if (input.value.length) {
+        //         formRemoveError(input);
+        //     }
+        // });
 
-        const obj = {
-            email: validol('email', emailTest),
-            phone: validol('phone', onlyNums),
-            name: validol('name', onlyTextTest)
-        };
+       
 
-        let error = Object.values(obj).reduce((a, b) => a + b);
+        let error = validol(obj);
+
+        console.log(`error ${error}`);
+
+
+
+
+
+
+
+        // reqItems.forEach(reqInput => {
+
+        //     if (reqInput.getAttribute("name") == "email") {
+        //         if (!inputTest(emailTest, reqInput)) {
+        //             formAddError(reqInput);
+        //             error++;
+        //         }
+        //     } else if (reqInput.getAttribute("name") == "phone") {
+        //         if (reqInput.value.length != 10 || !inputTest(onlyNums, reqInput)) {
+        //             formAddError(reqInput);
+        //             error++;
+        //         }
+        //     } else if (reqInput.getAttribute("name") == "name") {
+        //         if (!inputTest(onlyTextTest, reqInput)) {
+        //             formAddError(reqInput);
+        //             error++;
+        //         }
+        //     }
+        // });
+
+
 
 
         return error;
