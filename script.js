@@ -31,9 +31,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // removes _error class 
     const formRemoveError = (input) => {
-        input.parentElement.classList.remove('_error');
-        input.classList.remove('_error');
+        if (input && input.parentElement.classList.contains('_error')) {
+            input.parentElement.classList.remove('_error');
+            input.classList.remove('_error');
+        }
+
     };
+
+    const checkInput = () => {
+        allInputs.forEach((reqInput, i) => {
+            reqInput.addEventListener('input', (e) => {
+                formRemoveError(reqInput);
+                if (reqInput.nextElementSibling && reqInput.nextElementSibling.classList.contains('_error-alert')) {
+                    reqInput.nextElementSibling.remove();
+                }
+
+            });
+        });
+    };
+    checkInput();
 
     // "sends data"  if 0 errors
     const sendValidatedForm = (e) => {
@@ -57,23 +73,36 @@ document.addEventListener('DOMContentLoaded', () => {
     form.addEventListener('submit', sendValidatedForm);
 
     // checks input and removes error classes if type something there
-    const checkInput = () => {
-        allInputs.forEach((reqInput, i) => {
-            reqInput.addEventListener('input', () => {
-                formRemoveError(reqInput);
-                $("._req").on('input', function () {
-                    $(this).siblings().remove();
-                });
 
-            });
+
+
+
+    const validol = (nameInput, testName) => {
+        reqItems.forEach(reqInput => {
+            let error = 0;
+            if (reqInput.getAttribute("name") === nameInput) {
+                if (!inputTest(testName, reqInput)) {
+                    formAddError(reqInput);
+                    error++;
+                    console.log(error);
+
+                    return error;
+
+                }
+            }
         });
     };
-    checkInput();
+
+
+
+
 
 
     // 'validates' inputs with regex, counts errors, adds error classes
     const validateForm = (form) => {
-        let error = 0;
+
+
+
 
         allInputs.forEach(input => {
             input.value.trim().toLowerCase();
@@ -81,36 +110,55 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!input.classList.contains('_req')) {
                 formAddError(input);
             }
-            if (input.value.length > 0) {
+            if (input.value.length) {
                 formRemoveError(input);
             }
-
-
         });
 
-        reqItems.forEach(reqInput => {
+        const obj = {
+            email: validol('email', emailTest),
+            phone: validol('phone', onlyNums),
+            name: validol('name', onlyTextTest)
+        };
 
-            if (reqInput.getAttribute("name") == "email") {
-                if (!inputTest(emailTest, reqInput)) {
-                    formAddError(reqInput);
-                    error++;
-                }
-            } else if (reqInput.getAttribute("name") == "phone") {
-                if (reqInput.value.length != 10 || !inputTest(onlyNums, reqInput)) {
-                    formAddError(reqInput);
-                    error++;
-                }
-            } else if (reqInput.getAttribute("name") == "name") {
-                if (!inputTest(onlyTextTest, reqInput)) {
-                    formAddError(reqInput);
-                    error++;
-                }
-            }
-        });
+        let error = validol(obj);
+
+        console.log(`error ${error}`);
+
+
+
+
+
+
+
+        // reqItems.forEach(reqInput => {
+
+        //     if (reqInput.getAttribute("name") == "email") {
+        //         if (!inputTest(emailTest, reqInput)) {
+        //             formAddError(reqInput);
+        //             error++;
+        //         }
+        //     } else if (reqInput.getAttribute("name") == "phone") {
+        //         if (reqInput.value.length != 10 || !inputTest(onlyNums, reqInput)) {
+        //             formAddError(reqInput);
+        //             error++;
+        //         }
+        //     } else if (reqInput.getAttribute("name") == "name") {
+        //         if (!inputTest(onlyTextTest, reqInput)) {
+        //             formAddError(reqInput);
+        //             error++;
+        //         }
+        //     }
+        // });
+
+
+
 
         return error;
 
     };
+
+
 
 
 });
